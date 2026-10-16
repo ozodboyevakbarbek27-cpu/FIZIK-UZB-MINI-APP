@@ -1,0 +1,1 @@
+# FIZIK-UZB-MINI-APP
