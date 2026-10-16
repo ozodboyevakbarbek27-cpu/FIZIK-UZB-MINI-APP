@@ -1,0 +1,640 @@
+
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FIZIK UZ | Fizika olami</title>
+<style>
+:root {
+  --bg: #080d1b;
+  --card: #121d33;
+  --blue: #438cff;
+  --purple: #a46bff;
+  --cyan: #36e4dc;
+  --white: #f5f7ff;
+  --muted: #aab8d4;
+  --green: #39d98a;
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  background: radial-gradient(ellipse at top, #192c56, var(--bg) 65%);
+  color: var(--white);
+  font-family: Arial, sans-serif;
+}
+header {
+  position: sticky;
+  top: 0;
+  z-index: 5;
+  background: #080d1bf2;
+  border-bottom: 1px solid #263653;
+  padding: 14px;
+}
+nav {
+  width: min(1100px, 94%);
+  margin: auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+.logo { color: var(--cyan); font-size: 23px; font-weight: 900; }
+button {
+  cursor: pointer;
+  color: white;
+  background: linear-gradient(110deg, var(--blue), var(--purple));
+  border: 0;
+  border-radius: 12px;
+  padding: 12px 15px;
+  font-weight: bold;
+}
+.nav-button { background: #182641; border: 1px solid #304361; margin: 2px; }
+button:hover { filter: brightness(1.15); }
+.container { width: min(1100px, 94%); margin: auto; }
+.hero { padding: 42px 0 25px; }
+.hero h1 { font-size: clamp(35px, 7vw, 62px); line-height: 1.08; }
+.hero h1 span { color: var(--cyan); }
+p { color: var(--muted); line-height: 1.7; }
+h2 { margin-top: 30px; }
+.card {
+  background: linear-gradient(145deg, #152440, #0e1729);
+  border: 1px solid #2b3d5c;
+  border-radius: 18px;
+  padding: 18px;
+}
+.stats, .topics, .formulas {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 14px;
+}
+.stat-number { color: var(--cyan); font-size: 30px; font-weight: 900; }
+input, select {
+  background: #0b1426;
+  color: white;
+  border: 1px solid #344969;
+  border-radius: 10px;
+  padding: 12px;
+  max-width: 100%;
+}
+#search { width: 100%; margin: 10px 0 18px; }
+.topic {
+  width: 100%;
+  height: 100%;
+  text-align: left;
+  background: #121d33;
+  border: 1px solid #304361;
+  color: white;
+}
+.topic h3 { color: var(--cyan); }
+.topic-icon { font-size: 30px; }
+.topic p { font-size: 13px; }
+.formula {
+  color: var(--cyan);
+  font-size: 21px;
+  font-weight: bold;
+}
+.answers {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+  margin-top: 20px;
+}
+.answer {
+  text-align: left;
+  background: #182641;
+  border: 1px solid #344969;
+  line-height: 1.5;
+}
+.answer.correct { background: #12482f; border-color: var(--green); }
+.answer.wrong { background: #572238; border-color: #ff647c; }
+.feedback {
+  margin-top: 16px;
+  padding: 14px;
+  border-radius: 12px;
+  background: #102b39;
+  color: var(--cyan);
+}
+.progress {
+  height: 7px;
+  background: #273653;
+  border-radius: 9px;
+  overflow: hidden;
+  margin: 16px 0;
+}
+#bar {
+  height: 100%;
+  width: 0;
+  background: linear-gradient(90deg, var(--cyan), var(--blue), var(--purple));
+}
+.hidden { display: none !important; }
+footer { text-align: center; padding: 35px 10px; color: var(--muted); }
+@media(max-width:700px) {
+  .topics, .formulas, .stats { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .answers { grid-template-columns: 1fr; }
+  nav { justify-content: center; }
+}
+@media(max-width:420px) {
+  .topics, .formulas, .stats { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+<header>
+<nav>
+  <div class="logo">⚛ FIZIK UZ</div>
+  <div>
+    <button class="nav-button" onclick="showSection('home')">Bosh sahifa</button>
+    <button class="nav-button" onclick="showSection('topics')">Mavzular</button>
+    <button class="nav-button" onclick="showSection('formulas')">Formulalar</button>
+    <button class="nav-button" onclick="showSection('tests')">Testlar</button>
+  </div>
+</nav>
+</header>
+
+<main class="container">
+<section id="home" class="hero">
+  <p>⚡ FIZIKANI O‘RGANISHNING YANGI USULI</p>
+  <h1>Fizikani <span>oson o‘rgan.</span><br>Bilimingni sinab ko‘r.</h1>
+  <p>Mexanika, elektr, optika, issiqlik va boshqa mavzularni o‘rgan. Formulalarni eslab qol va testlarda bilimingni tekshir.</p>
+  <button onclick="showSection('topics')">📚 Mavzularni boshlash →</button>
+  <button onclick="showSection('tests')">🧠 Test ishlash</button>
+  <div class="stats">
+    <div class="card"><div class="stat-number" id="topicCount">12</div>Mavzular</div>
+    <div class="card"><div class="stat-number" id="questionCount">0</div>Savollar</div>
+    <div class="card"><div class="stat-number" id="bestScore">0%</div>Eng yaxshi natija</div>
+  </div>
+</section>
+
+<section id="topics">
+  <h2>📚 Fizika mavzulari</h2>
+  <p>Kerakli mavzuni tanla. Har bir mavzuda tushuntirish va formulalar mavjud.</p>
+  <input id="search" placeholder="🔍 Mavzu qidirish..." oninput="renderTopics()">
+  <div id="topicGrid" class="topics"></div>
+</section>
+
+<section id="lesson" class="card hidden">
+  <button onclick="showSection('topics')">← Mavzularga qaytish</button>
+  <h2 id="lessonTitle"></h2>
+  <p id="lessonDescription"></p>
+  <h3>Asosiy formulalar</h3>
+  <div id="lessonFormulas" class="formulas"></div>
+  <h3>O‘zingni tekshir</h3>
+  <p>Shu mavzu bo‘yicha test ishlash orqali bilimlaringni mustahkamla.</p>
+  <button onclick="startQuiz(currentTopic,'Oson',10)">Testni boshlash →</button>
+</section>
+
+<section id="formulas">
+  <h2>🧮 Formulalar to‘plami</h2>
+  <p>Kerakli formulani mavzu bo‘yicha top.</p>
+  <div id="formulaGrid" class="formulas"></div>
+</section>
+
+<section id="tests">
+  <h2>🧠 Bilimingni sinab ko‘r</h2>
+  <div class="card">
+    <p>Test mavzusi, qiyinlik darajasi va savollar sonini tanla.</p>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px">
+      <label>Mavzu
+        <select id="quizTopic"></select>
+      </label>
+      <label>Daraja
+        <select id="quizLevel">
+          <option>Oson</option>
+          <option>O‘rtacha</option>
+          <option>Qiyin</option>
+        </select>
+      </label>
+      <label>Savollar soni
+        <select id="quizCount">
+          <option value="5">5 ta</option>
+          <option value="10" selected>10 ta</option>
+          <option value="15">15 ta</option>
+        </select>
+      </label>
+    </div>
+    <br>
+    <button onclick="startQuiz()">Testni boshlash</button>
+  </div>
+  <div id="quiz" class="card hidden">
+    <div id="quizInfo"></div>
+    <div class="progress"><div id="bar"></div></div>
+    <h3 id="question"></h3>
+    <div id="answers" class="answers"></div>
+    <div id="feedback" class="feedback hidden"></div>
+    <br>
+    <button id="nextButton" class="hidden" onclick="nextQuestion()">Keyingi savol →</button>
+  </div>
+  <div id="result" class="card hidden"></div>
+</section>
+</main>
+
+<footer>⚛ FIZIK UZ · Fizikani birgalikda o‘rganamiz</footer>
+
+<script>
+const topics = [
+{
+name:"Mexanik harakat",icon:"🚗",
+desc:"Yo‘l, ko‘chish, tezlik va tezlanish.",
+lesson:"Mexanik harakat — jismning boshqa jismlarga nisbatan o‘rni vaqt o‘tishi bilan o‘zgarishidir. Tezlik bosib o‘tilgan yo‘lning vaqtga nisbatiga teng. Tezlanish esa tezlikning vaqt davomida qanday o‘zgarishini ko‘rsatadi.",
+formulas:[["v = s / t","Tezlik"],["s = vt","Tekis harakat yo‘li"],["a = (v − v₀) / t","Tezlanish"],["v = v₀ + at","Yakuniy tezlik"],["s = v₀t + at² / 2","Tekis tezlanuvchan harakat"]]
+},
+{
+name:"Kuch va Nyuton qonunlari",icon:"💪",
+desc:"Massa, kuch, og‘irlik va tezlanish.",
+lesson:"Kuch jismning harakatini yoki shaklini o‘zgartirishi mumkin. Nyutonning ikkinchi qonuni natijaviy kuch massa va tezlanish ko‘paytmasiga tengligini ifodalaydi.",
+formulas:[["F = ma","Nyutonning ikkinchi qonuni"],["F = mg","Og‘irlik kuchi"],["ρ = m / V","Zichlik"],["a = F / m","Tezlanish"]]
+},
+{
+name:"Ish, quvvat va energiya",icon:"⚡",
+desc:"Mexanik ish va energiya turlari.",
+lesson:"Mexanik ish kuch va kuch yo‘nalishidagi ko‘chishga bog‘liq. Quvvat ishning bajarilish tezligini ko‘rsatadi. Kinetik energiya harakatga, potensial energiya esa jismning holatiga bog‘liq.",
+formulas:[["A = Fs","Mexanik ish"],["P = A / t","Quvvat"],["Eₖ = mv² / 2","Kinetik energiya"],["Eₚ = mgh","Potensial energiya"]]
+},
+{
+name:"Issiqlik hodisalari",icon:"🌡️",
+desc:"Temperatura va issiqlik miqdori.",
+lesson:"Issiqlik almashinuvida energiya bir jismdan ikkinchisiga o‘tadi. Modda qizdirilganda temperaturasi o‘zgarishi mumkin. Issiqlik miqdori massa, solishtirma issiqlik sig‘imi va temperatura o‘zgarishiga bog‘liq.",
+formulas:[["Q = cmΔT","Issiqlik miqdori"],["Q = λm","Erish issiqligi"],["T = t + 273","Kelvinga aylantirish"]]
+},
+{
+name:"Elektr toki",icon:"🔋",
+desc:"Tok kuchi, kuchlanish va qarshilik.",
+lesson:"Elektr toki — zaryadlangan zarrachalarning tartibli harakati. Om qonuni tok kuchi, kuchlanish va qarshilik orasidagi bog‘lanishni ko‘rsatadi.",
+formulas:[["I = q / t","Tok kuchi"],["U = IR","Om qonuni"],["P = UI","Elektr quvvati"],["A = UIt","Elektr toki ishi"]]
+},
+{
+name:"Optika",icon:"🔦",
+desc:"Yorug‘lik, ko‘zgular va linzalar.",
+lesson:"Yorug‘lik elektromagnit to‘lqindir. Tekis ko‘zguda tushish burchagi qaytish burchagiga teng. Linzalar nurlarni yig‘ishi yoki sochishi mumkin.",
+formulas:[["c ≈ 3 × 10⁸ m/s","Yorug‘lik tezligi"],["n = c / v","Sindirish ko‘rsatkichi"],["D = 1 / F","Optik kuch, F metrda"]]
+},
+{
+name:"Tebranish va to‘lqinlar",icon:"〰️",
+desc:"Davr, chastota va to‘lqin uzunligi.",
+lesson:"Tebranish vaqt o‘tishi bilan takrorlanadigan harakatdir. To‘lqin energiya uzatadi. Chastota bir sekunddagi tebranishlar sonidir.",
+formulas:[["f = 1 / T","Chastota"],["v = λf","To‘lqin tezligi"],["T = t / N","Davr"]]
+},
+{
+name:"Suyuqlik va gazlar",icon:"💧",
+desc:"Bosim va Arximed kuchi.",
+lesson:"Bosim kuchning sirt yuzasiga nisbatidir. Suyuqlikda chuqurlik ortgan sari bosim ortadi. Suyuqlikka botirilgan jismga yuqoriga yo‘nalgan Arximed kuchi ta’sir qiladi.",
+formulas:[["p = F / S","Bosim"],["p = ρgh","Suyuqlik bosimi"],["Fₐ = ρgV","Arximed kuchi"]]
+},
+{
+name:"Atom fizikasi",icon:"⚛️",
+desc:"Atom, proton, neytron va elektron.",
+lesson:"Atom yadro va elektronlardan tashkil topgan. Yadroda protonlar va ko‘p atomlarda neytronlar mavjud. Atom raqami protonlar sonini bildiradi.",
+formulas:[["E = mc²","Massa-energiya bog‘lanishi"],["E = hf","Foton energiyasi"]]
+},
+{
+name:"Magnit maydon",icon:"🧲",
+desc:"Magnitlar va elektr tokining magnit ta’siri.",
+lesson:"Elektr toki magnit maydon hosil qiladi. Bir xil magnit qutblari itariladi, qarama-qarshi qutblar tortiladi. Magnit oqimi o‘zgarganda induksion elektr hodisalari yuz berishi mumkin.",
+formulas:[["F = BIL sin θ","Tokli o‘tkazgichga kuch"],["Φ = BA cos θ","Magnit oqimi"]]
+},
+{
+name:"Gravitatsiya",icon:"🌍",
+desc:"Tortishish kuchi va erkin tushish.",
+lesson:"Massaga ega jismlar o‘zaro tortishadi. Yer sirtida erkin tushish tezlanishi taxminan 9.8 m/s². Oddiy masalalarda ko‘pincha 10 m/s² deb olinadi.",
+formulas:[["F = Gm₁m₂ / r²","Tortishish kuchi"],["v = gt","Erkin tushish tezligi"],["h = gt² / 2","Erkin tushish yo‘li"]]
+},
+{
+name:"SI birliklari",icon:"📏",
+desc:"Fizik kattaliklar va birliklarni almashtirish.",
+lesson:"Fizik kattalik son qiymati va birlik bilan ifodalanadi. Hisoblashdan oldin kattaliklarni mos birliklarga aylantirish kerak.",
+formulas:[["1 km = 1000 m","Uzunlik"],["1 soat = 3600 s","Vaqt"],["1 m/s = 3.6 km/soat","Tezlik birliklari"]]
+}
+];
+
+const questionBank = {
+"Mexanik harakat":[
+["Tezlik qanday topiladi?",["s/t","m/V","F/S","m·g"],0,"Tezlik yo‘lni vaqtga bo‘lish orqali topiladi."],
+["Tezlikning SI birligi qaysi?",["kg","m/s","N","J"],1,"Tezlik m/s bilan o‘lchanadi."],
+["60 m yo‘l 10 sekundda bosib o‘tildi. Tezlik qancha?",["5 m/s","6 m/s","10 m/s","60 m/s"],1,"v = 60/10 = 6 m/s."],
+["72 km/soat necha m/s?",["10","15","20","25"],2,"72 ni 3.6 ga bo‘lamiz: 20 m/s."],
+["Jism tinch holatda bo‘lsa, boshlang‘ich tezligi?",["0 m/s","1 m/s","10 m/s","100 m/s"],0,"Tinch holatda boshlang‘ich tezlik nol."],
+["Jism 8 m/s tezlik bilan 5 s yurdi. Yo‘l qancha?",["13 m","40 m","3 m","80 m"],1,"s = vt = 8 × 5 = 40 m."],
+["Tezlik 4 m/s dan 10 m/s gacha 3 s da oshdi. Tezlanish?",["2 m/s²","3 m/s²","6 m/s²","14 m/s²"],0,"a = (10−4)/3 = 2 m/s²."],
+["36 km/soat necha m/s?",["5","10","15","36"],1,"36/3.6 = 10 m/s."],
+["Tinch holatdan 2 m/s² tezlanish bilan 5 s yurdi. Yo‘l?",["10 m","20 m","25 m","50 m"],2,"s = at²/2 = 2×25/2 = 25 m."],
+["Jism 3 m/s boshlang‘ich tezlik bilan 2 m/s² tezlanishda 6 s yurdi. Yo‘l?",["18 m","36 m","54 m","72 m"],2,"s = v₀t + at²/2 = 18 + 36 = 54 m."]
+],
+"Kuch va Nyuton qonunlari":[
+["Kuchning SI birligi?",["Joul","Nyuton","Vatt","Paskal"],1,"Kuch nyuton bilan o‘lchanadi."],
+["2 kg jismga 3 m/s² tezlanish berildi. Kuch?",["5 N","6 N","9 N","12 N"],1,"F = ma = 2×3 = 6 N."],
+["Massaning SI birligi?",["Metr","Sekund","Kilogramm","Nyuton"],2,"Massa kilogrammda o‘lchanadi."],
+["4 kg jismning og‘irligi g=10 bo‘lsa?",["4 N","14 N","40 N","400 N"],2,"F = mg = 4×10 = 40 N."],
+["10 kg jismga 50 N kuch ta’sir etsa, tezlanish?",["2 m/s²","5 m/s²","10 m/s²","500 m/s²"],1,"a = F/m = 50/10 = 5 m/s²."],
+["Massa 8 kg, tezlanish 1.5 m/s². Kuch?",["5 N","9.5 N","12 N","16 N"],2,"F = 8×1.5 = 12 N."],
+["Jismga 20 N kuch ta’sir qiladi, tezlanish 4 m/s². Massa?",["4 kg","5 kg","16 kg","80 kg"],1,"m = F/a = 20/4 = 5 kg."],
+["Natijaviy kuch nol bo‘lsa, tezlik albatta nol bo‘ladimi?",["Ha","Yo‘q, o‘zgarmas bo‘lishi mumkin","Faqat yuqoriga yuradi","Massa yo‘qoladi"],1,"Natijaviy kuch nol bo‘lsa, tezlik o‘zgarmas qolishi mumkin."],
+["Massa 6 kg, g=10 m/s². Og‘irlik kuchi?",["16 N","60 N","600 N","6 N"],1,"F = mg = 60 N."],
+["15 kg jism 3 m/s² tezlanmoqda. Kuch?",["5 N","18 N","45 N","90 N"],2,"F = ma = 45 N."]
+],
+"Ish, quvvat va energiya":[
+["Ishning SI birligi?",["Vatt","Joul","Amper","Volt"],1,"Ish joul bilan o‘lchanadi."],
+["10 N kuch jismni 3 m siljitdi. Ish?",["13 J","30 J","3.3 J","300 J"],1,"A = Fs = 30 J."],
+["Quvvat nimani bildiradi?",["Massani","Ish bajarilish tezligini","Hajmni","Zichlikni"],1,"P = A/t."],
+["200 J ish 10 s da bajarildi. Quvvat?",["20 W","2000 W","10 W","190 W"],0,"P = 200/10 = 20 W."],
+["2 kg jism 4 m/s tezlikda. Kinetik energiya?",["8 J","16 J","4 J","32 J"],1,"Eₖ = mv²/2 = 16 J."],
+["3 kg jism 5 m balandlikda, g=10. Potensial energiya?",["15 J","50 J","150 J","300 J"],2,"Eₚ = mgh = 150 J."],
+["600 J ish 30 s da bajarildi. Quvvat?",["20 W","30 W","180 W","18000 W"],0,"P = 600/30 = 20 W."],
+["Jismning tezligi 2 baravar oshsa, kinetik energiya?",["2 baravar","4 baravar","8 baravar","O‘zgarmaydi"],1,"Kinetik energiya tezlik kvadratiga bog‘liq."],
+["100 W qurilma 2 minut ishladi. Ish?",["200 J","1200 J","12000 J","20000 J"],2,"A = Pt = 100×120 = 12000 J."],
+["4 kg jism 5 m/s tezlikda. Kinetik energiya?",["20 J","40 J","50 J","100 J"],2,"Eₖ = 4×25/2 = 50 J."]
+],
+"Issiqlik hodisalari":[
+["Temperaturaning SI birligi?",["Kelvin","Nyuton","Joul","Vatt"],0,"Temperatura SI tizimida kelvin bilan o‘lchanadi."],
+["Issiqlik miqdori birligi?",["Amper","Joul","Om","Metr"],1,"Issiqlik miqdori joul bilan o‘lchanadi."],
+["Suv normal bosimda qaysi temperaturada qaynaydi?",["0°C","50°C","100°C","273°C"],2,"Normal atmosfera bosimida taxminan 100°C."],
+["2 kg suv 5°C ga isitildi. c=4200. Q?",["4200 J","8400 J","42000 J","2100 J"],2,"Q = cmΔT = 2×4200×5 = 42000 J."],
+["20°C necha kelvin taxminan?",["20 K","253 K","293 K","373 K"],2,"T ≈ 20 + 273 = 293 K."],
+["1 kg modda c=500 J/(kg·°C), temperatura 10°C ga oshdi. Q?",["500 J","5000 J","50000 J","50 J"],1,"Q = 1×500×10 = 5000 J."],
+["Erish jarayonida qattiq modda nima qiladi?",["Suyuqlikka aylanadi","Darhol gazga aylanadi","Yonadi","Massasi yo‘qoladi"],0,"Erish — qattiq holatdan suyuq holatga o‘tish."],
+["0.5 kg suv 20°C dan 80°C gacha isitildi. c=4200. Q?",["12600 J","42000 J","126000 J","252000 J"],2,"Q = 0.5×4200×60 = 126000 J."],
+["5 kg modda 10°C ga isitildi, Q=100000 J. c?",["200","500","2000","5000"],2,"c = Q/(mΔT) = 100000/(5×10) = 2000 J/(kg·°C)."],
+["Issiqlik qattiq jismlarda zarrachalar orqali uzatilishi nima deyiladi?",["Konveksiya","Issiqlik o‘tkazuvchanlik","Faqat nurlanish","Bug‘lanish"],1,"Bu issiqlik o‘tkazuvchanlik deyiladi."]
+],
+"Elektr toki":[
+["Tok kuchi birligi?",["Volt","Amper","Om","Vatt"],1,"Tok kuchi amperda o‘lchanadi."],
+["Kuchlanish birligi?",["Volt","Amper","Joul","Paskal"],0,"Kuchlanish volt bilan o‘lchanadi."],
+["U=12 V, R=4 Ω. Tok kuchi?",["2 A","3 A","4 A","48 A"],1,"I = U/R = 3 A."],
+["Elektr quvvati formulasi?",["P=UI","P=U/I","P=I/R","P=R/U"],0,"Elektr quvvati P = UI."],
+["U=24 V, R=6 Ω. Tok?",["2 A","4 A","6 A","144 A"],1,"I = 24/6 = 4 A."],
+["12 V kuchlanishda 2 A tok. Quvvat?",["6 W","10 W","24 W","14 W"],2,"P = UI = 24 W."],
+["6 Ω va 3 Ω rezistorlar ketma-ket. Umumiy qarshilik?",["2 Ω","3 Ω","9 Ω","18 Ω"],2,"Ketma-ket qarshiliklar qo‘shiladi."],
+["Tok 3 A, vaqt 10 s. Zaryad?",["3 C","13 C","30 C","300 C"],2,"q = It = 30 C."],
+["220 V tarmoqda 2 A tok. Quvvat?",["110 W","220 W","440 W","880 W"],2,"P = UI = 440 W."],
+["10 Ω rezistorda kuchlanish 5 V. Tok?",["0.5 A","2 A","5 A","50 A"],0,"I = U/R = 0.5 A."]
+],
+"Optika":[
+["Yorug‘lik vakuumda qanday tezlikda tarqaladi?",["300 m/s","3000 m/s","300000 km/s","30 km/s"],2,"c ≈ 3×10⁸ m/s."],
+["Ko‘zguga tushish burchagi 30°. Qaytish burchagi?",["15°","30°","60°","90°"],1,"Qaytish burchagi tushish burchagiga teng."],
+["Yorug‘lik qanday to‘lqin?",["Mexanik bo‘ylama","Elektromagnit","Faqat tovush","Suv to‘lqini"],1,"Yorug‘lik elektromagnit to‘lqindir."],
+["Muhitda yorug‘lik tezligi 2×10⁸ m/s. n?",["0.67","1","1.5","3"],2,"n = c/v = 1.5."],
+["Tekis ko‘zgu tasviri qanday?",["Haqiqiy va teskari","Mavhum, tik, o‘lchami teng","Faqat kattalashgan","Rangsiz"],1,"Tekis ko‘zguda tasvir mavhum, tik va o‘lchami teng."],
+["Fokus masofasi 0.5 m. Optik kuch?",["0.5 dptr","1 dptr","2 dptr","5 dptr"],2,"D = 1/F = 2 dioptriya."],
+["Fokus masofasi 25 cm. Optik kuch?",["0.25 dptr","2 dptr","4 dptr","25 dptr"],2,"F = 0.25 m; D = 4 dioptriya."],
+["Yorug‘lik zichroq optik muhitga o‘tganda tezligi odatda?",["Ortadi","Kamayadi","Cheksiz bo‘ladi","Har doim o‘zgarmaydi"],1,"Optik zichroq muhitda yorug‘lik tezligi odatda kamayadi."],
+["Yorug‘lik boshqa muhitga o‘tganda chastotasi?",["Ortadi","Kamayadi","O‘zgarmaydi","Nol bo‘ladi"],2,"Chastota chegaradan o‘tganda o‘zgarmaydi."],
+["Normal bo‘ylab ko‘zguga tushgan nur qaytish burchagi?",["0°","30°","45°","90°"],0,"Normal bilan burchak nol daraja."]
+],
+"Tebranish va to‘lqinlar":[
+["Chastota birligi?",["Gers","Joul","Nyuton","Volt"],0,"Chastota gers bilan o‘lchanadi."],
+["Davr 0.5 s. Chastota?",["0.5 Hz","1 Hz","2 Hz","5 Hz"],2,"f = 1/T = 2 Hz."],
+["Tovush qayerda tarqalmaydi?",["Havoda","Suvda","Po‘latda","Vakuumda"],3,"Tovush uchun moddiy muhit kerak."],
+["To‘lqin nimani uzatadi?",["Moddani butunlay","Energiya","Faqat rang","Massani yo‘q qiladi"],1,"To‘lqin energiya uzatadi."],
+["Davr 0.25 s. Chastota?",["0.25 Hz","2 Hz","4 Hz","25 Hz"],2,"f = 1/0.25 = 4 Hz."],
+["To‘lqin uzunligi 2 m, chastota 5 Hz. Tezlik?",["2.5 m/s","7 m/s","10 m/s","20 m/s"],2,"v = λf = 10 m/s."],
+["20 ta tebranish 10 s da. Chastota?",["0.5 Hz","2 Hz","10 Hz","200 Hz"],1,"f = N/t = 2 Hz."],
+["To‘lqin tezligi 12 m/s, chastota 3 Hz. Uzunlik?",["4 m","9 m","15 m","36 m"],0,"λ = v/f = 4 m."],
+["Chastota 50 Hz. Davr?",["0.02 s","0.2 s","2 s","50 s"],0,"T = 1/50 = 0.02 s."],
+["340 m/s tezlikli tovush chastotasi 170 Hz. To‘lqin uzunligi?",["0.5 m","2 m","170 m","510 m"],1,"λ = v/f = 2 m."]
+],
+"Suyuqlik va gazlar":[
+["Bosim birligi?",["Paskal","Joul","Vatt","Amper"],0,"Bosim paskal bilan o‘lchanadi."],
+["Bosim formulasi?",["p=F/S","p=FS","p=mV","p=vt"],0,"Bosim kuchning yuzaga nisbatidir."],
+["Suyuqlik chuqurligi oshsa bosim?",["Kamayadi","Ortadi","O‘zgarmaydi","Nol bo‘ladi"],1,"p = ρgh."],
+["Arximed kuchi qaysi tomonga yo‘naladi?",["Pastga","Yuqoriga","Yon tomonga","Har doim nol"],1,"Arximed kuchi yuqoriga yo‘naladi."],
+["20 N kuch 4 m² yuzaga ta’sir qiladi. Bosim?",["5 Pa","16 Pa","24 Pa","80 Pa"],0,"p = 20/4 = 5 Pa."],
+["Suv zichligi 1000 kg/m³, chuqurlik 2 m, g=10. Bosim?",["2000 Pa","10000 Pa","20000 Pa","50000 Pa"],2,"p = 1000×10×2 = 20000 Pa."],
+["0.002 m³ suv siqib chiqarildi. Arximed kuchi, g=10?",["2 N","10 N","20 N","200 N"],2,"Fₐ = 1000×10×0.002 = 20 N."],
+["100 N kuch, bosim 20 Pa. Yuza?",["0.2 m²","2 m²","5 m²","2000 m²"],2,"S = F/p = 5 m²."],
+["Suvda 5 m chuqurlikdagi bosim, g=10?",["5000 Pa","25000 Pa","50000 Pa","100000 Pa"],2,"p = 1000×10×5 = 50000 Pa."],
+["Massa 2 kg, hajm 0.001 m³. Zichlik?",["200","500","2000","20000 kg/m³"],2,"ρ = m/V = 2000 kg/m³."]
+],
+"Atom fizikasi":[
+["Atom yadrosida qaysi zarrachalar bo‘ladi?",["Faqat elektronlar","Protonlar va ko‘p atomlarda neytronlar","Faqat fotonlar","Molekulalar"],1,"Yadro protonlar va odatda neytronlardan tashkil topadi."],
+["Elektron zaryadi?",["Musbat","Manfiy","Neytral","Har doim o‘zgaradi"],1,"Elektron manfiy zaryadli."],
+["Proton zaryadi?",["Musbat","Manfiy","Neytral","Zaryadsiz"],0,"Proton musbat zaryadli."],
+["E=mc² nimani ifodalaydi?",["Massa va energiya bog‘lanishini","Bosimni","Tok kuchini","Zichlikni"],0,"Formula massa va energiya ekvivalentligini ko‘rsatadi."],
+["Atom raqami nimani bildiradi?",["Neytronlar sonini","Protonlar sonini","Molekulalar sonini","Elektron tezligini"],1,"Atom raqami protonlar soniga teng."],
+["Izotoplar nimasi bilan farqlanadi?",["Protonlar soni","Neytronlar soni","Element nomi","Elektron zaryadi"],1,"Izotoplarda neytronlar soni farq qiladi."],
+["Foton energiyasi formulasi?",["E=hf","F=ma","p=F/S","v=s/t"],0,"Foton energiyasi chastotaga proporsional."],
+["Neytral atomda 8 proton bo‘lsa, elektronlar soni?",["4","8","16","0"],1,"Neytral atomda protonlar va elektronlar soni teng."],
+["Radioaktivlik nima?",["Yadroning spontan o‘zgarishi","Suv qaynashi","Yorug‘lik qaytishi","Tezlanish"],0,"Radioaktivlik beqaror yadroning o‘z-o‘zidan o‘zgarishidir."],
+["Yarim yemirilish davri 10 kun. 20 kundan keyin qancha qismi qoladi?",["1/2","1/4","1/8","1/10"],1,"Ikki yarim davrdan keyin 1/4 qismi qoladi."]
+],
+"Magnit maydon":[
+["Bir xil magnit qutblari?",["Tortishadi","Itarishadi","Yo‘qoladi","Ta’sirlashmaydi"],1,"Bir xil qutblar itariladi."],
+["Elektr toki magnit maydon hosil qiladimi?",["Ha","Yo‘q","Faqat suvda","Faqat muzda"],0,"Tok atrofida magnit maydon hosil bo‘ladi."],
+["Qarama-qarshi magnit qutblari?",["Itariladi","Tortiladi","Yo‘qoladi","Atomga aylanadi"],1,"Qarama-qarshi qutblar tortiladi."],
+["Magnit induksiyasining birligi?",["Tesla","Joul","Volt","Paskal"],0,"Magnit induksiyasi tesla bilan o‘lchanadi."],
+["Magnit oqimi formulasi?",["Φ=BA cosθ","F=ma","p=F/S","I=U/R"],0,"Magnit oqimi Φ = BA cosθ."],
+["Magnit maydon chiziqlari tashqarida qayerdan chiqadi?",["Shimoliy qutbdan","Janubiy qutbdan","Faqat markazdan","Hech qayerdan"],0,"Tashqi sohada chiziqlar shimoldan janubga yo‘naladi."],
+["Magnit oqimi o‘zgarsa, nima yuz berishi mumkin?",["Induksiya","Faqat qaynash","Faqat tovush","Massa yo‘qolishi"],0,"O‘zgaruvchi magnit oqimi induksion EYuK hosil qilishi mumkin."],
+["B=0.2 T, I=5 A, L=3 m, sim maydonga tik. Kuch?",["0.3 N","1 N","3 N","30 N"],2,"F = BIL = 0.2×5×3 = 3 N."],
+["B=2 T, A=0.1 m², maydon sirtga tik. Oqim?",["0.02 Wb","0.2 Wb","2 Wb","20 Wb"],1,"Φ = BA = 0.2 Wb."],
+["Zaryad tezligi magnit maydonga parallel bo‘lsa, magnit kuch?",["Maksimal","Nol","Cheksiz","Doim 1 N"],1,"F = qvB sinθ, θ=0° bo‘lsa kuch nol."]
+],
+"Gravitatsiya":[
+["Yerda erkin tushish tezlanishi taxminan?",["1 m/s²","9.8 m/s²","100 m/s²","300 m/s²"],1,"g ≈ 9.8 m/s²."],
+["Erkin tushayotgan jismning tezligi vaqt bilan?",["Kamayadi","Ortadi","Doim nol","O‘zgarmaydi"],1,"Havo qarshiligi hisobga olinmasa v=gt."],
+["Yerning tabiiy yo‘ldoshi?",["Mars","Oy","Quyosh","Venera"],1,"Yerning tabiiy yo‘ldoshi — Oy."],
+["Tinch holatdan 2 s tushgan jism tezligi, g=10?",["5 m/s","10 m/s","20 m/s","40 m/s"],2,"v = gt = 20 m/s."],
+["Tinch holatdan 4 s tushgan jism yo‘li, g=10?",["20 m","40 m","80 m","160 m"],2,"h = gt²/2 = 80 m."],
+["Massa ikki baravar oshsa, tortishish kuchi qanday o‘zgaradi?",["Yarmiga tushadi","Ikki baravar oshadi","To‘rt baravar oshadi","O‘zgarmaydi"],1,"Bitta massa ikki baravar bo‘lsa, kuch ham ikki baravar."],
+["Tinch holatdan 3 s tushgan jism tezligi, g=10?",["10 m/s","20 m/s","30 m/s","90 m/s"],2,"v = gt = 30 m/s."],
+["Tinch holatdan 5 s tushgan jism yo‘li?",["25 m","50 m","125 m","250 m"],2,"h = gt²/2 = 125 m."],
+["Masofa 2 baravar oshsa, tortishish kuchi?",["2 baravar kamayadi","4 baravar kamayadi","4 baravar oshadi","O‘zgarmaydi"],1,"Tortishish kuchi masofa kvadratiga teskari proporsional."],
+["5 kg jismning og‘irligi g=9.8 bo‘lsa?",["4.9 N","49 N","98 N","490 N"],1,"F = mg = 49 N."]
+],
+"SI birliklari":[
+["1 km necha metr?",["10","100","1000","10000"],2,"1 km = 1000 m."],
+["1 soat necha sekund?",["60","600","3600","1000"],2,"1 soat = 3600 s."],
+["Massa birligi?",["Kilogramm","Metr","Sekund","Nyuton"],0,"SI massa birligi kilogramm."],
+["Kuch birligi?",["Joul","Nyuton","Vatt","Kelvin"],1,"Kuch nyuton bilan o‘lchanadi."],
+["Hajmning SI birligi?",["m³","kg","s","A"],0,"Hajmning SI birligi kub metr."],
+["36 km/soat necha m/s?",["5","10","15","36"],1,"36/3.6 = 10 m/s."],
+["2.5 km necha metr?",["25","250","2500","25000"],2,"2.5 km = 2500 m."],
+["5 minut necha sekund?",["50","150","300","500"],2,"5×60 = 300 s."],
+["0.75 kg necha gramm?",["7.5 g","75 g","750 g","7500 g"],2,"0.75 kg = 750 g."],
+["1 m³ necha litr?",["10","100","1000","10000"],2,"1 m³ = 1000 litr."]
+]
+};
+
+let currentTopic = "Mexanik harakat";
+let quizQuestions = [];
+let questionIndex = 0;
+let score = 0;
+let answered = false;
+let best = Number(localStorage.getItem("fizikUzBest") || 0);
+
+function showSection(id) {
+  ["home","topics","lesson","formulas","tests"].forEach(section => {
+    document.getElementById(section).classList.toggle("hidden", section !== id);
+  });
+  document.getElementById("result").classList.add("hidden");
+  window.scrollTo({top:0,behavior:"smooth"});
+}
+
+function renderTopics() {
+  const search = document.getElementById("search").value.toLowerCase();
+  const grid = document.getElementById("topicGrid");
+  grid.innerHTML = "";
+  topics.filter(t => (t.name + " " + t.desc).toLowerCase().includes(search)).forEach(topic => {
+    const button = document.createElement("button");
+    button.className = "card topic";
+    button.innerHTML = `<div class="topic-icon">${topic.icon}</div><h3>${topic.name}</h3><p>${topic.desc}</p><b>O‘rganish →</b>`;
+    button.onclick = () => openLesson(topic.name);
+    grid.appendChild(button);
+  });
+}
+
+function openLesson(name) {
+  const topic = topics.find(t => t.name === name);
+  currentTopic = name;
+  document.getElementById("lessonTitle").textContent = topic.icon + " " + topic.name;
+  document.getElementById("lessonDescription").textContent = topic.lesson;
+  const list = document.getElementById("lessonFormulas");
+  list.innerHTML = "";
+  topic.formulas.forEach(f => {
+    const div = document.createElement("div");
+    div.className = "card";
+    div.innerHTML = `<div class="formula">${f[0]}</div><p>${f[1]}</p>`;
+    list.appendChild(div);
+  });
+  showSection("lesson");
+}
+
+function renderFormulas() {
+  const grid = document.getElementById("formulaGrid");
+  grid.innerHTML = "";
+  topics.forEach(topic => {
+    const card = document.createElement("div");
+    card.className = "card";
+    let content = `<h3>${topic.icon} ${topic.name}</h3>`;
+    topic.formulas.forEach(f => {
+      content += `<p><strong style="color:var(--cyan)">${f[0]}</strong><br>${f[1]}</p>`;
+    });
+    card.innerHTML = content;
+    grid.appendChild(card);
+  });
+}
+
+function setupQuizOptions() {
+  const select = document.getElementById("quizTopic");
+  select.innerHTML = "";
+  topics.forEach(topic => {
+    const option = document.createElement("option");
+    option.value = topic.name;
+    option.textContent = topic.name;
+    select.appendChild(option);
+  });
+}
+
+function startQuiz(topicName, level, count) {
+  if (topicName) document.getElementById("quizTopic").value = topicName;
+  if (level) document.getElementById("quizLevel").value = level;
+  if (count) document.getElementById("quizCount").value = String(count);
+
+  currentTopic = document.getElementById("quizTopic").value;
+  const all = questionBank[currentTopic] || [];
+  quizQuestions = [...all].sort(() => Math.random() - 0.5)
+    .slice(0, Math.min(Number(document.getElementById("quizCount").value), all.length));
+
+  if (!quizQuestions.length) {
+    alert("Bu mavzuda savollar topilmadi.");
+    return;
+  }
+
+  questionIndex = 0;
+  score = 0;
+  document.getElementById("quiz").classList.remove("hidden");
+  document.getElementById("result").classList.add("hidden");
+  showSection("tests");
+  document.getElementById("quiz").classList.remove("hidden");
+  renderQuestion();
+  document.getElementById("quiz").scrollIntoView({behavior:"smooth"});
+}
+
+function renderQuestion() {
+  answered = false;
+  const q = quizQuestions[questionIndex];
+  document.getElementById("quizInfo").textContent =
+    `${currentTopic} · Savol ${questionIndex + 1} / ${quizQuestions.length}`;
+  document.getElementById("bar").style.width =
+    `${questionIndex / quizQuestions.length * 100}%`;
+  document.getElementById("question").textContent = q[0];
+  const answers = document.getElementById("answers");
+  answers.innerHTML = "";
+  document.getElementById("feedback").classList.add("hidden");
+  document.getElementById("nextButton").classList.add("hidden");
+
+  q[1].forEach((text,index) => {
+    const button = document.createElement("button");
+    button.className = "answer";
+    button.innerHTML = `<b>${String.fromCharCode(65+index)}.</b> ${text}`;
+    button.onclick = () => chooseAnswer(index,button);
+    answers.appendChild(button);
+  });
+}
+
+function chooseAnswer(index, button) {
+  if (answered) return;
+  answered = true;
+  const q = quizQuestions[questionIndex];
+  const buttons = [...document.querySelectorAll("#answers button")];
+  buttons.forEach((b,i) => {
+    b.disabled = true;
+    if (i === q[2]) b.classList.add("correct");
+  });
+  if (index === q[2]) {
+    score++;
+    button.classList.add("correct");
+  } else {
+    button.classList.add("wrong");
+  }
+  const feedback = document.getElementById("feedback");
+  feedback.textContent = (index === q[2] ? "✅ To‘g‘ri! " : "❌ Noto‘g‘ri. ") + q[3];
+  feedback.classList.remove("hidden");
+  document.getElementById("nextButton").classList.remove("hidden");
+  document.getElementById("bar").style.width =
+    `${(questionIndex + 1) / quizQuestions.length * 100}%`;
+}
+
+function nextQuestion() {
+  questionIndex++;
+  if (questionIndex < quizQuestions.length) {
+    renderQuestion();
+  } else {
+    finishQuiz();
+  }
+}
+
+function finishQuiz() {
+  const percent = Math.round(score / quizQuestions.length * 100);
+  if (percent > best) {
+    best = percent;
+    localStorage.setItem("fizikUzBest", String(best));
+  }
+  document.getElementById("bestScore").textContent = best + "%";
+  const result = document.getElementById("result");
+  result.classList.remove("hidden");
+  result.innerHTML = `
+    <h2>🎉 Test yakunlandi!</h2>
+    <div class="stat-number">${percent}%</div>
+    <p>${quizQuestions.length} ta savoldan ${score} tasiga to‘g‘ri javob berding.</p>
+    <p>${percent >= 80 ? "Ajoyib natija! Shu tarzda davom et!" : percent >= 50 ? "Yaxshi! Mavzuni yana takrorlab ko‘r." : "Xafa bo‘lma. Mavzuni qayta o‘rganib, yana urinib ko‘r."}</p>
+    <button onclick="startQuiz(currentTopic)">Yana test ishlash</button>
+    <button onclick="showSection('topics')">Boshqa mavzu</button>`;
+  document.getElementById("quiz").classList.add("hidden");
+  result.scrollIntoView({behavior:"smooth"});
+}
+
+function updateStats() {
+  document.getElementById("topicCount").textContent = topics.length;
+  document.getElementById("questionCount").textContent =
+    Object.values(questionBank).reduce((sum,items) => sum + items.length,0);
+  document.getElementById("bestScore").textContent = best + "%";
+}
+
+setupQuizOptions();
+renderTopics();
+renderFormulas();
+updateStats();
+</script>
+</body>
+</html>
